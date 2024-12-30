@@ -26,17 +26,17 @@
     if match-until != none {
       let parsed = int(match-until.captures.first())
       // assert(parsed > 0, "parsed idx is non-positive")
-      ( until: parsed )
+      (until: parsed)
     } else if match-beginning != none {
       let parsed = int(match-beginning.captures.first())
       // assert(parsed > 0, "parsed idx is non-positive")
-      ( beginning: parsed )
+      (beginning: parsed)
     } else if match-range != none {
       let parsed-first = int(match-range.captures.first())
       let parsed-last = int(match-range.captures.last())
       // assert(parsed-first > 0, "parsed idx is non-positive")
       // assert(parsed-last > 0, "parsed idx is non-positive")
-      ( beginning: parsed-first, until: parsed-last )
+      (beginning: parsed-first, until: parsed-last)
     } else if match-single != none {
       let parsed = int(match-single.captures.first())
       // assert(parsed > 0, "parsed idx is non-positive")
@@ -98,7 +98,7 @@
 }
 
 #let _conditional-display(visible-subslides, reserve-space, mode, body) = {
-  context{
+  context {
     let vs = if reserve-space and handout-mode.at(here()) {
       (:)
     } else {
@@ -136,16 +136,19 @@
 
   let subslides = subslides-contents.map(it => it.first())
   let contents = subslides-contents.map(it => it.last())
-  context{
+  context {
     let sizes = contents.map(c => measure(c))
     let max-width = calc.max(..sizes.map(sz => sz.width))
     let max-height = calc.max(..sizes.map(sz => sz.height))
     for (subslides, content) in subslides-contents {
-      only(subslides, box(
-        width: max-width,
-        height: max-height,
-        align(position, content)
-      ))
+      only(
+        subslides,
+        box(
+          width: max-width,
+          height: max-height,
+          align(position, content),
+        ),
+      )
     }
   }
 }
@@ -153,7 +156,7 @@
 #let alternatives(
   start: 1,
   repeat-last: false,
-  ..args
+  ..args,
 ) = {
   let contents = args.pos()
   let kwargs = args.named()
@@ -169,7 +172,7 @@
   end: none,
   count: none,
   ..kwargs,
-  fn
+  fn,
 ) = {
   let end = if end == none {
     if count == none {
@@ -196,7 +199,7 @@
   let items = if repr(body.func()) == "sequence" {
     body.children
   } else {
-    ( body, )
+    (body,)
   }
 
   let idx = start
@@ -214,12 +217,12 @@
 #let _items-one-by-one(fn, start: 1, mode: "invisible", ..args) = {
   let kwargs = args.named()
   let items = args.pos()
-  let covered-items = items.enumerate().map(
-    ((idx, item)) => uncover((beginning: idx + start), mode: mode, item)
-  )
+  let covered-items = items
+    .enumerate()
+    .map(((idx, item)) => uncover((beginning: idx + start), mode: mode, item))
   fn(
     ..kwargs,
-    ..covered-items
+    ..covered-items,
   )
 }
 
@@ -234,15 +237,15 @@
 #let terms-one-by-one(start: 1, mode: "invisible", ..args) = {
   let kwargs = args.named()
   let items = args.pos()
-  let covered-items = items.enumerate().map(
-    ((idx, item)) => terms.item(
+  let covered-items = items
+    .enumerate()
+    .map(((idx, item)) => terms.item(
       item.term,
-      uncover((beginning: idx + start), mode: mode, item.description)
-    )
-  )
+      uncover((beginning: idx + start), mode: mode, item.description),
+    ))
   terms(
     ..kwargs,
-    ..covered-items
+    ..covered-items,
   )
 }
 
@@ -259,7 +262,7 @@
   }
 }
 
-#let paused-content(body) = locate( loc => {
+#let paused-content(body) = locate(loc => {
   let current-subslide = subslide.at(loc).first()
   let current-pause-counter = pause-counter.at(loc).first()
 

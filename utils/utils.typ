@@ -5,7 +5,7 @@
 // SECTIONS
 
 #let sections-state = state("polylux-sections", ())
-#let register-section(name) = context{
+#let register-section(name) = context {
   let loc = here()
   sections-state.update(sections => {
     sections.push((body: name, loc: loc))
@@ -24,17 +24,22 @@
 
 #let polylux-outline(enum-args: (:), padding: 0pt) = context {
   let sections = sections-state.final()
-  pad(padding, enum(
-    ..enum-args,
-    ..sections.map(section => link(section.loc, section.body))
-  ))
+  pad(
+    padding,
+    enum(
+      ..enum-args,
+      ..sections.map(section => link(section.loc, section.body)),
+    ),
+  )
 }
 
 
 // PROGRESS
 
 #let polylux-progress(ratio-to-content) = context {
-  let ratio = logic.logical-slide.get().first() / logic.logical-slide.final().first()
+  let ratio = (
+    logic.logical-slide.get().first() / logic.logical-slide.final().first()
+  )
   ratio-to-content(ratio)
 }
 
@@ -91,7 +96,9 @@
       layout(container-size => {
         // Helper function to more easily grab absolute units
         let get-pts(body, w-or-h) = {
-          let dim = if w-or-h == "w" {container-size.width} else {container-size.height}
+          let dim = if w-or-h == "w" { container-size.width } else {
+            container-size.height
+          }
           _size-to-pt(body, styles, dim)
         }
 
@@ -99,7 +106,10 @@
         // Note this is different from the post-scale width, which is a limiting factor
         // on the allowable scaling ratio
         let boxed-content = _limit-content-width(
-          width: prescale-width, body, container-size, styles
+          width: prescale-width,
+          body,
+          container-size,
+          styles,
         )
 
         // post-scaling width
@@ -123,7 +133,7 @@
         box(
           width: new-width,
           height: available-height,
-          scale(x: ratio, y: ratio, origin: top + left, boxed-content)
+          scale(x: ratio, y: ratio, origin: top + left, boxed-content),
         )
       })
     })
@@ -134,7 +144,7 @@
 
 #let side-by-side(columns: none, gutter: 1em, ..bodies) = {
   let bodies = bodies.pos()
-  let columns = if columns ==  none { (1fr,) * bodies.len() } else { columns }
+  let columns = if columns == none { (1fr,) * bodies.len() } else { columns }
   if columns.len() != bodies.len() {
     panic("number of columns must match number of content arguments")
   }
