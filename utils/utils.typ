@@ -5,12 +5,13 @@
 // SECTIONS
 
 #let sections-state = state("polylux-sections", ())
-#let register-section(name) = locate( loc => {
+#let register-section(name) = context{
+  let loc = here()
   sections-state.update(sections => {
     sections.push((body: name, loc: loc))
     sections
   })
-})
+}
 
 #let current-section = context {
   let sections = sections-state.get()
