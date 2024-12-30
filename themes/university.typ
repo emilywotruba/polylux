@@ -24,7 +24,7 @@
   color-c: rgb("#FBFEF9"),
   progress-bar: true,
   size: 25pt,
-  body
+  body,
 ) = {
   set page(
     paper: "presentation-" + aspect-ratio,
@@ -52,44 +52,47 @@
   date: none,
   logo: none,
 ) = {
-  let authors = if type(authors) ==  "array" { authors } else { (authors,) }
+  let authors = if type(authors) == "array" { authors } else { (authors,) }
 
-  let content = context{
+  let content = context {
     let colors = uni-colors.at(here())
 
     if logo != none {
       align(right, logo)
     }
 
-    align(center + horizon, {
-      block(
-        inset: 0em,
-        breakable: false,
-        {
-          text(size: 2em, fill: colors.a, strong(title))
-          if subtitle != none {
-            parbreak()
-            text(size: 1.2em, fill: colors.a, subtitle)
-          }
+    align(
+      center + horizon,
+      {
+        block(
+          inset: 0em,
+          breakable: false,
+          {
+            text(size: 2em, fill: colors.a, strong(title))
+            if subtitle != none {
+              parbreak()
+              text(size: 1.2em, fill: colors.a, subtitle)
+            }
+          },
+        )
+        set text(size: .8em)
+        grid(
+          columns: (1fr,) * calc.min(authors.len(), 3),
+          column-gutter: 1em,
+          row-gutter: 1em,
+          ..authors.map(author => text(fill: black, author))
+        )
+        v(1em)
+        if institution-name != none {
+          parbreak()
+          text(size: .9em, institution-name)
         }
-      )
-      set text(size: .8em)
-      grid(
-        columns: (1fr,) * calc.min(authors.len(), 3),
-        column-gutter: 1em,
-        row-gutter: 1em,
-        ..authors.map(author => text(fill: black, author))
-      )
-      v(1em)
-      if institution-name != none {
-        parbreak()
-        text(size: .9em, institution-name)
-      }
-      if date != none {
-        parbreak()
-        text(size: .8em, date)
-      }
-    })
+        if date != none {
+          parbreak()
+          text(size: .8em, date)
+        }
+      },
+    )
   }
 
   logic.polylux-slide(content)
@@ -101,21 +104,26 @@
   header: none,
   footer: none,
   new-section: none,
-  body
+  body,
 ) = {
-
   let body = pad(x: 2em, y: .5em, body)
-  
-  let progress-barline = context{
+
+  let progress-barline = context {
     if uni-progress-bar.at(here()) {
-      let cell = block.with( width: 100%, height: 100%, above: 0pt, below: 0pt, breakable: false )
+      let cell = block.with(
+        width: 100%,
+        height: 100%,
+        above: 0pt,
+        below: 0pt,
+        breakable: false,
+      )
       let colors = uni-colors.at(here())
 
-      utils.polylux-progress( ratio => {
+      utils.polylux-progress(ratio => {
         grid(
-          rows: 2pt, columns: (ratio * 100%, 1fr),
-          cell(fill: colors.a),
-          cell(fill: colors.b)
+          rows: 2pt,
+          columns: (ratio * 100%, 1fr),
+          cell(fill: colors.a), cell(fill: colors.b),
         )
       })
     } else { [] }
@@ -128,13 +136,20 @@
       if new-section != none {
         utils.register-section(new-section)
       }
-      context{
+      context {
         let colors = uni-colors.at(here())
-        block(fill: colors.c, inset: (x: .5em), grid(
-          columns: (60%, 40%),
-          align(top + left, heading(level: 2, text(fill: colors.a, title))),
-          align(top + right, text(fill: colors.a.lighten(65%), utils.current-section))
-        ))
+        block(
+          fill: colors.c,
+          inset: (x: .5em),
+          grid(
+            columns: (60%, 40%),
+            align(top + left, heading(level: 2, text(fill: colors.a, title))),
+            align(
+              top + right,
+              text(fill: colors.a.lighten(65%), utils.current-section),
+            ),
+          ),
+        )
       }
     } else { [] }
   }
@@ -148,13 +163,18 @@
     set text(size: 10pt)
     set align(center + bottom)
     let cell(fill: none, it) = rect(
-      width: 100%, height: 100%, inset: 1mm, outset: 0mm, fill: fill, stroke: none,
-      align(horizon, text(fill: white, it))
+      width: 100%,
+      height: 100%,
+      inset: 1mm,
+      outset: 0mm,
+      fill: fill,
+      stroke: none,
+      align(horizon, text(fill: white, it)),
     )
     if footer != none {
       footer
     } else {
-      context{
+      context {
         let colors = uni-colors.at(here())
 
         show: block.with(width: 100%, height: auto, fill: colors.b)
@@ -164,7 +184,7 @@
           cell(fill: colors.a, uni-short-author.get()),
           cell(uni-short-title.get()),
           cell(uni-short-date.get()),
-          cell(logic.logical-slide.display() + [~/~] + utils.last-slide-number)
+          cell(logic.logical-slide.display() + [~/~] + utils.last-slide-number),
         )
       }
     }
@@ -172,7 +192,7 @@
 
 
   set page(
-    margin: ( top: 2em, bottom: 1em, x: 0em ),
+    margin: (top: 2em, bottom: 1em, x: 0em),
     header: header,
     footer: footer,
     footer-descent: 0em,
@@ -183,7 +203,9 @@
 }
 
 #let focus-slide(background-color: none, background-img: none, body) = {
-  let background-color = if background-img == none and background-color ==  none {
+  let background-color = if (
+    background-img == none and background-color == none
+  ) {
     rgb("#0C6291")
   } else {
     background-color
@@ -227,7 +249,15 @@
   let num-rows = rows.len()
 
   if num-rows * num-cols < bodies.len() {
-    panic("number of rows (" + str(num-rows) + ") * number of columns (" + str(num-cols) + ") must at least be number of content arguments (" + str(bodies.len()) + ")")
+    panic(
+      "number of rows ("
+        + str(num-rows)
+        + ") * number of columns ("
+        + str(num-cols)
+        + ") must at least be number of content arguments ("
+        + str(bodies.len())
+        + ")",
+    )
   }
 
   let cart-idx(i) = (calc.quo(i, num-cols), calc.rem(i, num-cols))
