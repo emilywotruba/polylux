@@ -142,7 +142,7 @@
           fill: colors.c,
           inset: (x: .5em),
           grid(
-            columns: (60%, 40%),
+            columns: (1fr, auto),
             align(top + left, heading(level: 2, text(fill: colors.a, title))),
             align(
               top + right,
